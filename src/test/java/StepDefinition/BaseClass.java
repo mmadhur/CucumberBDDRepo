@@ -1,6 +1,9 @@
 package StepDefinition;
 
+import java.util.Properties;
+
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import pageObjects.AddcustomerPage;
@@ -13,8 +16,8 @@ public class BaseClass {
 	public Login_pge1 lp1;
 	public AddcustomerPage addcust;
 	public SearchCustomerPage searchcust;
-//	public Properties configprop;
-	
+	public Properties configprop;
+	public Logger logger;
 	
 	public static String Randomstring()
 	{

@@ -1,9 +1,17 @@
 package StepDefinition;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,40 +22,55 @@ import pageObjects.SearchCustomerPage;
 
 public class Steps extends BaseClass {
 
-//	@Before
-//	public void setup() throws IOException {
-	// Reading Properties file
+	@Before
+	public void setup() throws IOException {
 
-//		configprop = new Properties();
-//		FileInputStream fis = new FileInputStream("config.properties");
-//		configprop.load(fis);
-//
-//		String br = configprop.getProperty("browser");
-//
-//		if (br.equals("chrome")) {
-//			System.setProperty("webdriver.chrome.driver", configprop.getProperty("chromepath"));
-//			driver = new ChromeDriver();
-//		}
+		// ------Adding logs---------------
+		logger = Logger.getLogger("Cucumber_demo");
+		PropertyConfigurator.configure("log4j.properties");
 
-//	}
+		// ----Reading Properties file
+		configprop = new Properties();
+		// --------Opening file in input mode
+		FileInputStream fis = new FileInputStream("config.properties");
+		configprop.load(fis);
+
+		String br = configprop.getProperty("browser");
+		if (br.equals("chrome")) {
+			System.setProperty("webdriver.chrome.driver", configprop.getProperty("chromepath"));
+			driver = new ChromeDriver();
+
+		}
+		logger.info("*********** LAUNCHING BROWSER**********");
+
+	}
 
 	@Given("User launch chrome browser")
 	public void user_launch_chrome_browser() {
 
-		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//Drivers/chromedriver.exe");
-		driver = new ChromeDriver();
+		// ------Adding logs---------------
+//		logger = Logger.getLogger("Cucumber_demo");
+//		PropertyConfigurator.configure("log4j.properties");
+//		
+//		
+//		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//Drivers/chromedriver.exe");
+//		driver = new ChromeDriver();
+//		logger.info("*********** LAUNCHING BROWSER**********");
+		
 		lp1 = new Login_pge1(driver);
 
 	}
 
 	@When("User opens URL {string}")
 	public void user_opens_url(String url) {
+		logger.info("*********** OPENING URL**********");
 		driver.get(url);
 		driver.manage().window().maximize();
 	}
 
 	@When("User enters Email as {string} and Password as {string}")
 	public void user_enters_email_as_and_password_as(String email, String password) {
+		logger.info("*********** PROVIDING LOGIN DETAILS **********");
 		lp1.setusername(email);
 		lp1.setPassword(password);
 
@@ -55,7 +78,7 @@ public class Steps extends BaseClass {
 
 	@When("Click on Login")
 	public void click_on_login() throws InterruptedException {
-
+		logger.info("*********** STARTED LOGIN**********");
 		lp1.clicklogin();
 		Thread.sleep(3000);
 	}
@@ -64,11 +87,13 @@ public class Steps extends BaseClass {
 	public void page_title_should_be(String title) {
 
 		if (driver.getPageSource().contains("Login was unsuccessful")) {
+
 			System.out.println("-------Login Unsuccessful----------");
 			driver.close();
 			Assert.assertTrue(false);
 
 		} else {
+			logger.info("*********** LOGIN SUCCESSFUL**********");
 			Assert.assertEquals(driver.getTitle(), title);
 		}
 	}
@@ -77,12 +102,14 @@ public class Steps extends BaseClass {
 	public void user_click_on_log_out() throws InterruptedException {
 
 		Thread.sleep(3000);
+		logger.info("*********** CLICKING LOGOUT**********");
 		lp1.clicklogout();
 
 	}
 
 	@And("Close the browser")
 	public void close_the_browser() throws InterruptedException {
+		logger.info("*********** CLOSING BROWSER**********");
 		Thread.sleep(3000);
 		driver.quit();
 
@@ -99,31 +126,36 @@ public class Steps extends BaseClass {
 
 	@When("User click on customers menu")
 	public void user_click_on_customers_menu() throws InterruptedException {
+		logger.info("*********** CLICK ON CUSTOMERS MENU**********");
 		Thread.sleep(3000);
 		addcust.click_customer_menu();
 	}
 
 	@When("click on customers menu item")
 	public void click_on_customers_menu_item() throws InterruptedException {
+		logger.info("*********** CLICK ON CUSTOMERS MENU ITEM**********");
 		Thread.sleep(3000);
 		addcust.click_customer_menu_item();
 	}
 
 	@When("click on Add new button")
 	public void click_on_add_new_button() throws InterruptedException {
+
+		logger.info("************CLICK ON ADD NEW BUTTON**********");
 		Thread.sleep(3000);
 		addcust.click_addnew_btn();
 	}
 
 	@Then("User can view Add new customer page")
 	public void user_can_view_add_new_customer_page() {
-
+		logger.info("*********** OPENING CUSTOMERS DETAILS PAGE**********");
 		Assert.assertEquals("Add a new customer / nopCommerce administration", addcust.getTitle());
 	}
 
 	@When("User enter customer info")
 	public void user_enter_customer_info() throws InterruptedException {
 
+		logger.info("*********** ENTERING CUSTOMER DETAILS**********");
 		String email = Randomstring() + "@gmail.com";
 		addcust.setEmail(email);
 		addcust.setpassword("test1234");
